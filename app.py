@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request, render_template_string
+from flask import Flask, render_template, request, flash, redirect, url_for
 import psycopg2
 
 app = Flask(__name__)
@@ -7,9 +7,9 @@ app = Flask(__name__)
 # Функция создания подключения к бд
 def get_db_connection():
     connector = psycopg2.connect(host='localhost',
-                            database='flask_db',
-                            user="admin",
-                            password="admin")
+                                 database='flask_db',
+                                 user="admin",
+                                 password="admin")
     return connector
 
 
@@ -58,6 +58,25 @@ def index():
     cur1.close()
     conn1.close()
     return render_template('index.html', books=books)
+
+
+@app.route('/auth', methods=('GET', 'POST'))
+def auth():
+    if request.method == 'POST':
+        login = request.form['email']
+        passwd = request.form['password']
+
+        if not login or passwd:
+            flash('Логин или пароль не заполнен!')
+        else:
+            conn1 = get_db_connection()
+            cur1 = conn1.cursor()
+            result = cur1.execute('SELECT * FROM pg_user WHERE usename = ? AND passwd = ?',
+                                  (login, passwd)).fetchone()
+            cur1.close()
+            conn1.close()
+            flash(result)
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
