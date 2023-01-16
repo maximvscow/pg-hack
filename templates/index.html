@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<div>
+<div class="container justify-content-center mt-5 card card-body">
 <form>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -19,6 +19,26 @@
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+</div>
+
+<div class="container justify-content-center mt-5">
+<p>
+  <a class="btn btn-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Подсказка
+  </a>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    {% for book in books %}
+        <div class='book'>
+            <h3>#{{ book[0] }} - {{ book[1] }} BY {{ book[2] }}</h3>
+            <i><p>({{ book[3] }} pages)</p></i>
+            <p class='review'>{{ book[4] }}</p>
+            <i><p>Added {{ book[5] }}</p></i>
+        </div>
+    {% endfor %}
+  </div>
+</div>
 </div>
 
 {% endblock %}
