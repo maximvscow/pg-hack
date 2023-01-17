@@ -3,21 +3,29 @@
 {% block body %}
 
 <div class="container justify-content-center mt-5 card card-body">
-<form>
+<form method='post' action="{{ url_for('auth') }}">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ request.form['email'] }}">
-    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+    <div id="emailHelp" class="form-text">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
   </div>
   <div class="mb-3">
     <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" value="{{ request.form['password'] }}">
+    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
   </div>
   <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>
   </div>
-  <a href="{{ url_for('auth') }}" class="btn btn-primary">Submit</a>
+  <input type='submit' value='Submit' class='btn btn-primary'>
 </form>
 </div>
 
