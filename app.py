@@ -53,14 +53,8 @@ conn.close()
 @app.route('/')
 @app.route("/index")
 def index():
-    conn1 = get_db_connection()
-    cur1 = conn1.cursor()
-    cur1.execute('SELECT * FROM books;')
-    books = cur1.fetchall()
-    cur1.close()
-    conn1.close()
     flash('Ваш email будет использован только для регистрации!')
-    return render_template('index.html', books=books)
+    return render_template('index.html')
 
 
 @app.route('/auth', methods=('GET', 'POST'))
@@ -88,7 +82,7 @@ def auth():
 
 @app.route("/site")
 def site():
-    return render_template('site.html')
+    return render_template('index1.html')
 
 
 if __name__ == "__main__":
