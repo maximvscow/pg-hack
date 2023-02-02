@@ -43,6 +43,22 @@ cur.execute('INSERT INTO books (title, author, pages_num, review)'
              'Another great classic!')
             )
 
+cur.execute('INSERT INTO books (title, author, pages_num, review)'
+            'VALUES (%s, %s, %s, %s)',
+            ('Anna Karenina',
+             'Leo Tolstoy',
+             864,
+             'Another great classic!')
+            )
+
+cur.execute('INSERT INTO books (title, author, pages_num, review)'
+            'VALUES (%s, %s, %s, %s)',
+            ('Anna Karenina',
+             'Leo Tolstoy',
+             864,
+             'Another great classic!')
+            )
+
 conn.commit()
 
 cur.close()
@@ -50,11 +66,11 @@ conn.close()
 
 
 # Дальше функии приложения
-@app.route('/')
-@app.route("/index")
+@app.route('/123')
+@app.route("/index123")
 def index():
     flash('Ваш email будет использован только для регистрации!')
-    return render_template('index.html')
+    return render_template('index.html')  # поменял index на shop
 
 
 @app.route('/auth', methods=('GET', 'POST'))
@@ -80,9 +96,15 @@ def auth():
     return render_template('index.html')
 
 
-@app.route("/site")
+@app.route("/") # поменял site на index
 def site():
-    return render_template('index1.html')
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    cur1.execute('SELECT * FROM books;')
+    books = cur1.fetchall()
+    cur1.close()
+    conn1.close()
+    return render_template('shop.html', books=books)
 
 
 if __name__ == "__main__":

