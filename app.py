@@ -29,34 +29,50 @@ cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
 
 cur.execute('INSERT INTO books (title, author, pages_num, review)'
             'VALUES (%s, %s, %s, %s)',
-            ('A Tale of Two Cities',
-             'Charles Dickens',
-             489,
-             'A great classic!')
+            ('Этичный хакинг. Практическое руководство',
+             'Дэниел Г. Грэм',
+             384,
+             'Практическое руководство по взлому компьютерных систем с нуля, от перехвата трафика до создания троянов.')
             )
 
 cur.execute('INSERT INTO books (title, author, pages_num, review)'
             'VALUES (%s, %s, %s, %s)',
-            ('Anna Karenina',
-             'Leo Tolstoy',
-             864,
-             'Another great classic!')
+            ('Безопасность веб-приложений.',
+             'Эндрю Хоффман',
+             336,
+             'Познакомьтесь на практике с разведкой, защитой и нападением! Методы эффективного анализа веб-приложений.')
             )
 
 cur.execute('INSERT INTO books (title, author, pages_num, review)'
             'VALUES (%s, %s, %s, %s)',
-            ('Anna Karenina',
-             'Leo Tolstoy',
-             864,
-             'Another great classic!')
+            ('Грокаем алгоритмы. Иллюстрированное пособие',
+             'Адитья Бхаргава',
+             288,
+             'Алгоритмы – это всего лишь пошаговое решения задач, а грокать алгоритмы – это весело и увлекательно.'))
+
+
+cur.execute('INSERT INTO books (title, author, pages_num, review)'
+            'VALUES (%s, %s, %s, %s)',
+            ('Компьютерные сети. Принципы, технологии, протоколы',
+             'Виктор Олифер, Наталья Олифер',
+             1005,
+             'Издание предназначено для студентов, аспирантов и технических специалистов.')
             )
 
 cur.execute('INSERT INTO books (title, author, pages_num, review)'
             'VALUES (%s, %s, %s, %s)',
-            ('Anna Karenina',
-             'Leo Tolstoy',
-             864,
-             'Another great classic!')
+            ('Astra Linux. Руководство',
+             'Елена Вовк',
+             580,
+             'Практическое руководство по использованию российской операционной системы Astra Linux.')
+            )
+
+cur.execute('INSERT INTO books (title, author, pages_num, review)'
+            'VALUES (%s, %s, %s, %s)',
+            ('Думай медленно… Решай быстро',
+             'Даниэль Канеман',
+             710,
+             'Наши действия и поступки определены нашими мыслями. Но всегда ли мы контролируем наше мышление?')
             )
 
 conn.commit()
@@ -96,7 +112,7 @@ def auth():
     return render_template('index.html')
 
 
-@app.route("/") # поменял site на index
+@app.route("/shop") # поменял site на index
 def site():
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
@@ -105,6 +121,18 @@ def site():
     cur1.close()
     conn1.close()
     return render_template('shop.html', books=books)
+
+
+@app.route("/")
+def buy():
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    book_id = 1
+    cur1.execute("SELECT * FROM books WHERE id = " + str(book_id) + ";")
+    book = cur1.fetchone()
+    cur1.close()
+    conn1.close()
+    return render_template('buy.html', book=book)
 
 
 if __name__ == "__main__":
