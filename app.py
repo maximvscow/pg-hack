@@ -82,11 +82,11 @@ conn.close()
 
 
 # Дальше функии приложения
-@app.route('/123')
-@app.route("/index123")
+@app.route('/')
+@app.route("/index")
 def index():
     flash('Ваш email будет использован только для регистрации!')
-    return render_template('index.html')  # поменял index на shop
+    return render_template('index.html')
 
 
 @app.route('/auth', methods=('GET', 'POST'))
@@ -112,7 +112,7 @@ def auth():
     return render_template('index.html')
 
 
-@app.route("/shop") # поменял site на index
+@app.route('/shop', methods=('GET', 'POST'))
 def site():
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
@@ -123,12 +123,12 @@ def site():
     return render_template('shop.html', books=books)
 
 
-@app.route("/")
-def buy():
+@app.route("/buy/<int:book_id>", methods=['GET', 'POST'])
+def buy(book_id):
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
-    book_id = 1
-    cur1.execute("SELECT * FROM books WHERE id = " + str(book_id) + ";")
+    book_id1 = book_id
+    cur1.execute("SELECT * FROM books WHERE id = " + str(book_id1) + ";")
     book = cur1.fetchone()
     cur1.close()
     conn1.close()

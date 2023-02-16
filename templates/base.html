@@ -12,6 +12,47 @@
     <title>Уязвимости  СУБД PostgreSQL</title>
 </head>
 <body>
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <a class="navbar-brand" href="#">ЛитРес</a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Магазин</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Библиотека</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Мои книги</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+              <a class="nav-link  disabled" href="#">Корзина</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Сменить пользователя</a>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</nav>
+</div>
     {% block body %}{% endblock %}
+<div class="container mt-3 text-center text-lg-start bg-white text-muted">
+  <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" href="#">MDBootstrap.com</a>
+  </div>
+  <!-- Copyright -->
+</div>
 </body>
 </html>
