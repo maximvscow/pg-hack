@@ -27,6 +27,22 @@ cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
             'date_added date DEFAULT CURRENT_TIMESTAMP);'
             )
 
+cur.execute('DROP TABLE IF EXISTS coupons;')
+cur.execute('CREATE TABLE coupons (id serial PRIMARY KEY,'
+            'coupon varchar (150) NOT NULL,'
+            'discount integer NOT NULL);'
+            )
+
+cur.execute('INSERT INTO coupons (coupon, discount)'
+            'VALUES (%s, %s)',
+            ('kaf33', 15)
+            )
+
+cur.execute('INSERT INTO coupons (coupon, discount)'
+            'VALUES (%s, %s)',
+            ('maxim', 20)
+            )
+
 cur.execute('INSERT INTO books (title, author, pages_num, review)'
             'VALUES (%s, %s, %s, %s)',
             ('Этичный хакинг. Практическое руководство',
@@ -133,6 +149,19 @@ def buy(book_id):
     cur1.close()
     conn1.close()
     return render_template('buy.html', book=book)
+
+
+@app.route('/pay', methods=('GET', 'POST'))
+def auth(book_id):
+    if request.method == 'POST':
+        discount = request.form['coupon']
+        conn1 = get_db_connection()
+        cur1 = conn1.cursor()
+        cur1.execute("SELECT * FROM coupons WHERE coupon = '" + discount + "';")
+        result = cur1.fetchone()
+        cur1.close()
+        conn1.close()
+    return
 
 
 if __name__ == "__main__":
