@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import psycopg2
 import hashlib
+import json
 
 app = Flask(__name__)
 
@@ -152,16 +153,15 @@ def buy(book_id):
 
 
 @app.route('/pay', methods=('GET', 'POST'))
-def auth(book_id):
-    if request.method == 'POST':
-        discount = request.form['coupon']
-        conn1 = get_db_connection()
-        cur1 = conn1.cursor()
-        cur1.execute("SELECT * FROM coupons WHERE coupon = '" + discount + "';")
-        result = cur1.fetchone()
-        cur1.close()
-        conn1.close()
-    return
+def pay():
+    discount = request.form['coupon']
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    cur1.execute("SELECT * FROM coupons WHERE coupon = '" + discount + "';")
+    result = cur1.fetchone()
+    cur1.close()
+    conn1.close()
+    return json.dumps({'len': result, 'payment': 'False'})
 
 
 if __name__ == "__main__":

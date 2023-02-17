@@ -19,12 +19,12 @@
             </div>
         <div class="col-9">
             <div class="container justify-content-center mt-5 card card-body">
-            <form method='post' id="form1" action="/pay">
+            <form method='post' id="form" action="/pay">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Купон для скидки</label>
-                <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+                <label for="coupon" class="form-label">Купон для скидки</label>
+                <input class="form-control" id="coupon" aria-describedby="emailHelp" name="coupon">
               </div>
-              <input type='submit' value='Оплатить' class='btn btn-primary'>
+              <input type='button' value='Оплатить' class='btn btn-primary' onclick="pay();">
             </form>
             </div>
             <div class="container justify-content-center mt-5 card card-body">
@@ -39,5 +39,22 @@
         </div>
     </div>
 </div>
+    <script>
+        function pay() {
+            $.ajax({
+                type: 'POST',
+                url: "/pay",
+                data: $('form').serialize(),
+                type: 'POST',
+                success: function(response) {
+                    var json = jQuery.parseJSON(response)
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
 
 {% endblock %}
