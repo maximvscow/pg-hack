@@ -2,8 +2,11 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import psycopg2
 import hashlib
 import json
+from flask_login import LoginManager, login_required, login_user
+from login import UserLogin
 
 app = Flask(__name__)
+login_manager = LoginManager(app)
 
 
 # Функция создания подключения к бд
@@ -98,6 +101,17 @@ cur.close()
 conn.close()
 
 
+@login_manager.user_loader
+def load_user(login):
+    print("load_user")
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    loader = UserLogin().fromDB(login, cur1)
+    cur1.close()
+    conn1.close()
+    return loader
+
+
 # Дальше функии приложения
 @app.route('/')
 @app.route("/index")
@@ -120,17 +134,22 @@ def auth():
         cur1 = conn1.cursor()
         cur1.execute("SELECT EXISTS (SELECT * FROM pg_shadow WHERE usename = '" + login + "' AND passwd = '" + full_hash + "');")
         result = cur1.fetchone()
+        cur1.execute("SELECT * FROM pg_shadow WHERE usename = '" + login + "';")
+        user = cur1.fetchone()
         cur1.close()
         conn1.close()
         flash(result)
         if result[0] == True:
-            return redirect(url_for("site"))
+            userlogin = UserLogin().create(user)
+            login_user(userlogin)
+            return redirect(url_for("shop"))
         return redirect(url_for("index"))
     return render_template('index.html')
 
 
 @app.route('/shop', methods=('GET', 'POST'))
-def site():
+@login_required
+def shop():
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
     cur1.execute('SELECT * FROM books;')
