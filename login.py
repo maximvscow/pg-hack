@@ -18,4 +18,4 @@ class UserLogin:
         return False
 
     def get_id(self):
-        return str(self.__user.id)
+        return str(self.__user[1])
