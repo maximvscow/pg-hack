@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 import psycopg2
 import hashlib
 import json
@@ -29,7 +29,9 @@ cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
             'pages_num integer NOT NULL,'
             'cost integer NOT NULL,'
             'review text,'
-            'date_added date DEFAULT CURRENT_TIMESTAMP);'
+            'date_added date DEFAULT CURRENT_TIMESTAMP,'
+            'key varchar (10),'
+            'filename varchar (150) NOT NULL);'
             )
 
 cur.execute('DROP TABLE IF EXISTS coupons;')
@@ -48,58 +50,71 @@ cur.execute('INSERT INTO coupons (coupon, discount)'
             ('maxim', 20)
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Этичный хакинг. Практическое руководство',
              'Дэниел Г. Грэм',
              384,
              235,
-             'Практическое руководство по взлому компьютерных систем с нуля, от перехвата трафика до создания троянов.')
+             'Практическое руководство по взлому компьютерных систем с нуля, от перехвата трафика до создания троянов.',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Безопасность веб-приложений.',
              'Эндрю Хоффман',
              336,
              550,
-             'Познакомьтесь на практике с разведкой, защитой и нападением! Методы эффективного анализа веб-приложений.')
+             'Познакомьтесь на практике с разведкой, защитой и нападением! Методы эффективного анализа веб-приложений.',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Грокаем алгоритмы. Иллюстрированное пособие',
              'Адитья Бхаргава',
              288,
              300,
-             'Алгоритмы – это всего лишь пошаговое решения задач, а грокать алгоритмы – это весело и увлекательно.'))
+             'Алгоритмы – это всего лишь пошаговое решения задач, а грокать алгоритмы – это весело и увлекательно.',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
+            )
 
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Компьютерные сети. Принципы, технологии, протоколы',
              'Виктор Олифер, Наталья Олифер',
              1005,
              699,
-             'Издание предназначено для студентов, аспирантов и технических специалистов.')
+             'Издание предназначено для студентов, аспирантов и технических специалистов.',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Astra Linux. Руководство',
              'Елена Вовк',
              580,
              899,
-             'Практическое руководство по использованию российской операционной системы Astra Linux.')
+             'Практическое руководство по использованию российской операционной системы Astra Linux.',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
-            'VALUES (%s, %s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Думай медленно… Решай быстро',
              'Даниэль Канеман',
              710,
              990,
-             'Наши действия и поступки определены нашими мыслями. Но всегда ли мы контролируем наше мышление?')
+             'Наши действия и поступки определены нашими мыслями. Но всегда ли мы контролируем наше мышление?',
+             'qwerty123',
+             'Deniel_G._Grem_Etichnyiy_haking.pdf')
             )
 
 conn.commit()
@@ -204,6 +219,41 @@ def pay():
     if result[2] == 100:
         return json.dumps({'coupon': result, 'payment': 'True'})
     return json.dumps({'coupon': result, 'payment': 'False'})
+
+
+@app.route('/get_key', methods=('GET', 'POST'))
+@login_required
+def get_key():
+    request_data = request.get_json()
+    book_id = request_data['book_id']
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    cur1.execute("SELECT key FROM books WHERE id = '" + book_id + "';")
+    download_key = cur1.fetchone()
+    cur1.close()
+    conn1.close()
+    return json.dumps({'key': download_key})
+
+
+@app.route('/download', methods=('GET', 'POST'))
+@login_required
+def download():
+    request_data = request.get_json()
+    download_key = request_data['download_key']
+    book_id = request_data['book_id']
+    conn1 = get_db_connection()
+    cur1 = conn1.cursor()
+    cur1.execute("SELECT key FROM books WHERE id = '" + book_id + "';")
+    db_key = cur1.fetchone()
+    if download_key == db_key:
+        cur1.execute("SELECT filename FROM books WHERE id = '" + book_id + "';")
+        filename = cur1.fetchone()
+        cur1.close()
+        conn1.close()
+        return send_from_directory(directory="books", filename=filename, as_attachment=True)
+    cur1.close()
+    conn1.close()
+    return json.dumps({'Oops': 'Oops!'})
 
 
 if __name__ == "__main__":
