@@ -4,8 +4,12 @@ import hashlib
 import json
 from flask_login import LoginManager, login_required, login_user
 from login import UserLogin
+from os import path
+
+DOWNLOAD_FOLDER = '/books'
 
 app = Flask(__name__)
+app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 login_manager = LoginManager(app)
 
 
@@ -173,9 +177,9 @@ def auth():
         cur1.close()
         conn1.close()
         flash(result)
-        if result[0] == True:
-            userlogin = UserLogin().create(user)
-            login_user(userlogin)
+        if result[0]:
+            user_login = UserLogin().create(user)
+            login_user(user_login)
             return redirect(url_for("shop"))
         return redirect(url_for("index"))
     return render_template('index.html')
@@ -238,19 +242,20 @@ def get_key():
 @app.route('/download', methods=('GET', 'POST'))
 @login_required
 def download():
-    request_data = request.get_json()
-    download_key = request_data['download_key']
-    book_id = request_data['book_id']
+    download_key = request.form['downloadKey']
+    book_id = request.form['bookId']
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
     cur1.execute("SELECT key FROM books WHERE id = '" + book_id + "';")
     db_key = cur1.fetchone()
-    if download_key == db_key:
+    if download_key == db_key[0]:
         cur1.execute("SELECT filename FROM books WHERE id = '" + book_id + "';")
         filename = cur1.fetchone()
         cur1.close()
         conn1.close()
-        return send_from_directory(directory="books", filename=filename, as_attachment=True)
+        print(filename[0])
+        directory = path.join(app.root_path, app.config['DOWNLOAD_FOLDER'])
+        return send_from_directory(directory=directory, filename=filename[0])
     cur1.close()
     conn1.close()
     return json.dumps({'Oops': 'Oops!'})

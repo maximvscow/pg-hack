@@ -6,9 +6,6 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header" id="book_id">
-                    {{ book[0] }}
-                </div>
             <img src="/static/images/{{ book[0] }}.jpg" class="card-img-top">
                   <div class="card-body">
                   <h5 class="card-title">{{ book[0] }} - {{ book[1] }}</h5>
@@ -38,10 +35,12 @@
             </form>
             </div>
             <div class="container justify-content-center mt-5 card card-body">
-            <form method='post' id="form3" action="{{ url_for('download') }}">
+            <form>
               <div class="mb-3">
                 <label for="download_key" class="form-label">Ключ для скачивания книги</label>
-                <input type="password" class="form-control" id="download_key" name="key">
+                <input type="password" class="form-control" id="download_key">
+                <label for="book_id" class="form-label">Ключ для скачивания книги</label>
+                <input class="form-control disabled" id="book_id" value="{{ book[0] }}">
               </div>
               <input type='submit' value='Скачать книгу' class='btn btn-primary' onclick="download();">
             </form>
@@ -50,7 +49,6 @@
     </div>
 </div>
     <script>
-        let book_id = document.getElementById("book_id").value;
         function pay() {
             $.ajax({
                 type: 'POST',
@@ -65,17 +63,15 @@
                     console.log(error);
                 }
             });
-        }
+        };
         function download() {
-            let key = document.getElementById("download_key").value;
             $.ajax({
-                dataType: "json",
                 type: 'POST',
                 url: "/download",
                 data: {
-                          "download_key": key,
-                          "book_id": book_id
-                        },
+                     downloadKey : $('#download_key').val(),
+                     bookId: $('#book_id').val(),
+                         },
                 type: 'POST',
                 success: function(response) {
                     var json = jQuery.parseJSON(response)
@@ -85,7 +81,7 @@
                     console.log(error);
                 }
             });
-        }
+        };
     </script>
 
 {% endblock %}

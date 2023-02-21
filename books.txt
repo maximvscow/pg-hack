@@ -1,16 +1,10 @@
-{% for book in books %}
-        <div class='book'>
-            <h3>#{{ book[0] }} - {{ book[1] }} BY {{ book[2] }}</h3>
-            <i><p>({{ book[3] }} pages)</p></i>
-            <p class='review'>{{ book[4] }}</p>
-            <i><p>Added {{ book[5] }}</p></i>
-        </div>
-    {% endfor %}
+type: 'POST',
+                success: function(response) {
+                    var json = jQuery.parseJSON(response)
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
 
-
-    conn1 = get_db_connection()
-    cur1 = conn1.cursor()
-    cur1.execute('SELECT * FROM books;')
-    books = cur1.fetchall()
-    cur1.close()
-    conn1.close()
+                ajax
