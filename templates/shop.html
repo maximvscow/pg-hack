@@ -48,13 +48,20 @@
         <div class="card my-3">
           <img src="/static/images/{{ book[0] }}.jpg" class="card-img-top">
           <div class="card-body">
-          <h5 class="card-title">{{ book[0] }} - {{ book[1] }}</h5>
+          <h5 class="card-title">{{ book[1] }}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{ book[2] }}</h6>
-          <p class="card-text">{{ book[4] }}</p>
-          <a href="{{ url_for('buy', book_id = book[0] ) }}" class="btn btn-primary">Купить книгу</a>
+          <p class="card-text">{{ book[5] }}</p>
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a href="#" class="btn btn-success disabled mx-1">{{ book[3] }} ₽</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('buy', book_id = book[0] ) }}" class="btn btn-primary">Купить книгу</a>
+            </li>
+          </ul>
           </div>
           <div class="card-footer text-muted">
-            {{ book[5] }}
+            {{ book[6] }}
           </div>
       </div>
       </div>

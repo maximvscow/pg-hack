@@ -10,10 +10,10 @@
                   <div class="card-body">
                   <h5 class="card-title">{{ book[0] }} - {{ book[1] }}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{{ book[2] }}</h6>
-                  <p class="card-text">{{ book[4] }}</p>
+                  <p class="card-text">{{ book[5] }}</p>
                   </div>
                   <div class="card-footer text-muted">
-                    {{ book[5] }}
+                    {{ book[6] }}
                   </div>
                 </div>
             </div>
@@ -21,10 +21,17 @@
             <div class="container justify-content-center mt-5 card card-body">
             <form method='post' id="form" action="/pay">
               <div class="mb-3">
-                <label for="coupon" class="form-label">Купон для скидки</label>
+                <label for="coupon" class="form-label">Скидочный купон</label>
                 <input class="form-control" id="coupon" aria-describedby="emailHelp" name="coupon">
               </div>
-              <input type='button' value='Оплатить' class='btn btn-primary' onclick="pay();">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a href="#" class="btn btn-success disabled me-2">{{ book[3] }} ₽</a>
+                    </li>
+                    <li class="nav-item">
+                      <input type='button' value='Оплатить' class='btn btn-primary' onclick="pay();">
+                    </li>
+                  </ul>
             </form>
             </div>
             <div class="container justify-content-center mt-5 card card-body">

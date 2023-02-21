@@ -27,6 +27,7 @@ cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
             'title varchar (150) NOT NULL,'
             'author varchar (50) NOT NULL,'
             'pages_num integer NOT NULL,'
+            'cost integer NOT NULL,'
             'review text,'
             'date_added date DEFAULT CURRENT_TIMESTAMP);'
             )
@@ -47,51 +48,57 @@ cur.execute('INSERT INTO coupons (coupon, discount)'
             ('maxim', 20)
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Этичный хакинг. Практическое руководство',
              'Дэниел Г. Грэм',
              384,
+             235,
              'Практическое руководство по взлому компьютерных систем с нуля, от перехвата трафика до создания троянов.')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Безопасность веб-приложений.',
              'Эндрю Хоффман',
              336,
+             550,
              'Познакомьтесь на практике с разведкой, защитой и нападением! Методы эффективного анализа веб-приложений.')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Грокаем алгоритмы. Иллюстрированное пособие',
              'Адитья Бхаргава',
              288,
+             300,
              'Алгоритмы – это всего лишь пошаговое решения задач, а грокать алгоритмы – это весело и увлекательно.'))
 
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Компьютерные сети. Принципы, технологии, протоколы',
              'Виктор Олифер, Наталья Олифер',
              1005,
+             699,
              'Издание предназначено для студентов, аспирантов и технических специалистов.')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Astra Linux. Руководство',
              'Елена Вовк',
              580,
+             899,
              'Практическое руководство по использованию российской операционной системы Astra Linux.')
             )
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
+cur.execute('INSERT INTO books (title, author, pages_num, cost, review)'
+            'VALUES (%s, %s, %s, %s, %s)',
             ('Думай медленно… Решай быстро',
              'Даниэль Канеман',
              710,
+             990,
              'Наши действия и поступки определены нашими мыслями. Но всегда ли мы контролируем наше мышление?')
             )
 
@@ -172,6 +179,7 @@ def shop():
 
 
 @app.route("/buy/<int:book_id>", methods=['GET', 'POST'])
+@login_required
 def buy(book_id):
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
@@ -184,6 +192,7 @@ def buy(book_id):
 
 
 @app.route('/pay', methods=('GET', 'POST'))
+@login_required
 def pay():
     discount = request.form['coupon']
     conn1 = get_db_connection()
@@ -192,7 +201,9 @@ def pay():
     result = cur1.fetchone()
     cur1.close()
     conn1.close()
-    return json.dumps({'len': result, 'payment': 'False'})
+    if result[2] == 100:
+        return json.dumps({'coupon': result, 'payment': 'True'})
+    return json.dumps({'coupon': result, 'payment': 'False'})
 
 
 if __name__ == "__main__":
