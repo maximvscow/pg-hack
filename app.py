@@ -167,7 +167,7 @@ def auth():
         result = cur1.fetchone()
         flash(result)
         print(result)
-        if result[0] == 'True':
+        if result[0] == True:
             cur1.execute("SELECT * FROM pg_shadow WHERE usename = '" + login + "';")
             user = cur1.fetchone()
             cur1.close()
@@ -219,6 +219,7 @@ def pay():
     result = cur1.fetchall()
     cur1.close()
     conn1.close()
+    print(result)
     try:
         if result[2] == 100:
             return json.dumps({'coupon': result, 'payment': 'True'})
