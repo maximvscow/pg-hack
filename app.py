@@ -151,18 +151,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/test')
-def test():
-    conn1 = get_db_connection()
-    cur1 = conn1.cursor()
-    cur1.execute("SELECT * FROM pg_shadow WHERE usename = 'postgres';")
-    result = cur1.fetchone()
-    cur1.close()
-    conn1.close()
-    print(result[1])
-    return render_template('index.html')
-
-
 @app.route('/auth', methods=('GET', 'POST'))
 def auth():
     if request.method == 'POST':
@@ -222,11 +210,16 @@ def pay():
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
     cur1.execute("SELECT * FROM coupons WHERE coupon = '" + discount + "';")
-    result = cur1.fetchone()
+    result = cur1.fetchall()
     cur1.close()
     conn1.close()
-    if result[2] == 100:
-        return json.dumps({'coupon': result, 'payment': 'True'})
+    try:
+        if result[2] == 100:
+            return json.dumps({'coupon': result, 'payment': 'True'})
+    except TypeError:
+        json.dumps({'coupon': result, 'payment': 'False'})
+    except IndexError:
+        json.dumps({'coupon': result, 'payment': 'False'})
     return json.dumps({'coupon': result, 'payment': 'False'})
 
 
