@@ -8,3 +8,24 @@ type: 'POST',
                 }
 
                 ajax
+
+
+
+function download() {
+            $.ajax({
+                type: 'POST',
+                url: "/download",
+                data: {
+                     downloadKey : $('#download_key').val(),
+                     bookId: $('#book_id').val(),
+                         },
+                type: 'POST',
+                success: function(response) {
+                    var json = jQuery.parseJSON(response)
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        };

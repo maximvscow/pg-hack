@@ -35,14 +35,14 @@
             </form>
             </div>
             <div class="container justify-content-center mt-5 card card-body">
-            <form>
+            <form method="post" action="{{ url_for('download') }}">
               <div class="mb-3">
                 <label for="download_key" class="form-label">Ключ для скачивания книги</label>
-                <input type="password" class="form-control" id="download_key">
+                <input type="password" class="form-control" id="download_key" name="download_key">
                 <label for="book_id" class="form-label">Ключ для скачивания книги</label>
-                <input class="form-control disabled" id="book_id" value="{{ book[0] }}">
+                <input class="form-control disabled" id="book_id" name="book_id" value="{{ book[0] }}">
               </div>
-              <input type='submit' value='Скачать книгу' class='btn btn-primary' onclick="download();">
+              <input type='submit' value='Скачать книгу' class='btn btn-primary'>
             </form>
             </div>
         </div>
@@ -56,26 +56,28 @@
                 data: $('form').serialize(),
                 type: 'POST',
                 success: function(response) {
-                    var json = jQuery.parseJSON(response)
+                    var json = jQuery.parseJSON(response);
                     console.log(response);
+                    if (json['payment'] == 'True') {
+                        get_key();
+                    };
                 },
                 error: function(error) {
                     console.log(error);
                 }
             });
         };
-        function download() {
+        function get_key() {
             $.ajax({
                 type: 'POST',
-                url: "/download",
+                url: "/get_key",
                 data: {
-                     downloadKey : $('#download_key').val(),
-                     bookId: $('#book_id').val(),
+                     book_id: $('#book_id').val(),
                          },
                 type: 'POST',
                 success: function(response) {
                     var json = jQuery.parseJSON(response)
-                    console.log(response);
+                    $("#download_key").val(json['key']);
                 },
                 error: function(error) {
                     console.log(error);

@@ -54,6 +54,11 @@ cur.execute('INSERT INTO coupons (coupon, discount)'
             ('maxim', 20)
             )
 
+cur.execute('INSERT INTO coupons (coupon, discount)'
+            'VALUES (%s, %s)',
+            ('fake', 100)
+            )
+
 cur.execute('INSERT INTO books (title, author, pages_num, cost, review, key, filename)'
             'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             ('Этичный хакинг. Практическое руководство',
@@ -228,22 +233,24 @@ def pay():
 @app.route('/get_key', methods=('GET', 'POST'))
 @login_required
 def get_key():
-    request_data = request.get_json()
-    book_id = request_data['book_id']
+    book_id = request.form['book_id']
+    print(book_id)
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
     cur1.execute("SELECT key FROM books WHERE id = '" + book_id + "';")
     download_key = cur1.fetchone()
     cur1.close()
     conn1.close()
-    return json.dumps({'key': download_key})
+    return json.dumps({'key': download_key[0]})
 
 
 @app.route('/download', methods=('GET', 'POST'))
 @login_required
 def download():
-    download_key = request.form['downloadKey']
-    book_id = request.form['bookId']
+    download_key = request.form['download_key']
+    book_id = request.form['book_id']
+    print(download_key)
+    print(book_id)
     conn1 = get_db_connection()
     cur1 = conn1.cursor()
     cur1.execute("SELECT key FROM books WHERE id = '" + book_id + "';")
@@ -253,9 +260,8 @@ def download():
         filename = cur1.fetchone()
         cur1.close()
         conn1.close()
-        print(filename[0])
-        directory = path.join(app.root_path, app.config['DOWNLOAD_FOLDER'])
-        return send_from_directory(directory=directory, filename=filename[0])
+        path = 'downloads'
+        return send_from_directory(path, filename[0], as_attachment=True)
     cur1.close()
     conn1.close()
     return json.dumps({'Oops': 'Oops!'})
