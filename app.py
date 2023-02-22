@@ -165,16 +165,22 @@ def auth():
         cur1 = conn1.cursor()
         cur1.execute("SELECT EXISTS (SELECT * FROM pg_shadow WHERE usename = '" + login + "' AND passwd = '" + full_hash + "');")
         result = cur1.fetchone()
-        cur1.execute("SELECT * FROM pg_shadow WHERE usename = '" + login + "';")
-        user = cur1.fetchone()
-        cur1.close()
-        conn1.close()
         flash(result)
-        if result[0]:
+        print(result)
+        if result[0] == 'True':
+            cur1.execute("SELECT * FROM pg_shadow WHERE usename = '" + login + "';")
+            user = cur1.fetchone()
+            cur1.close()
+            conn1.close()
             user_login = UserLogin().create(user)
             login_user(user_login)
             return redirect(url_for("shop"))
-        return redirect(url_for("index"))
+        else:
+            cur1.close()
+            conn1.close()
+            return redirect(url_for("index"))
+        cur1.close()
+        conn1.close()
     return render_template('index.html')
 
 
